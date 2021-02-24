@@ -1,0 +1,49 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity FSM is port 
+	(
+	In1: in std_logic;
+	RST: in std_logic; 
+	CLK: in std_logic;
+	Out1 : inout std_logic
+	);
+end FSM;
+
+architecture state of FSM is
+TYPE State_type IS (A, B, C);
+SIGNAL State : State_Type;
+
+	begin
+		process(In1, RST, CLK) begin
+			if rising_edge(CLK) then
+				if RST = '1' then
+					State <= A;
+				else
+					CASE State is
+						when A =>
+							if In1 = '1' then
+							State <= B;
+							else
+							State <= A;
+							end if;
+						when B =>
+							if In1 = '1' then
+							State <= B;
+							else
+							State <= C;
+							end if;
+						when C => 
+							if In1 = '1' then
+							State <= A;
+							else
+							State <= C;
+							end if;
+						when others =>
+							State <= A;
+					end case;
+				end if;
+			end if;
+		end process;
+	Out1 <= '1' WHEN State=C ELSE '0' ;
+	end state;
